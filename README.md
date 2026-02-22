@@ -1,4 +1,4 @@
-# NetSpectre - Deep Packet Inspection Engine
+# NetSpectre - DPI Engine
 
 ![NetSpectre Dashboard Demo](DPI-ezgif.com-video-to-gif-converter.gif)
 
