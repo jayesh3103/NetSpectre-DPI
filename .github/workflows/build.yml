@@ -1,0 +1,66 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libpcap-dev
+
+      - name: Build all targets
+        run: make -f Makefile.docker all
+
+      - name: Generate test PCAP
+        run: python3 generate_test_pcap.py
+
+      - name: Run DPI engine on test PCAP
+        run: ./build/dpi_engine test_dpi.pcap output.pcap
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: netspectre-linux-x64
+          path: build/
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build all targets
+        run: |
+          SDK=$(xcrun --show-sdk-path)
+          make CXX=g++ CXXFLAGS="-std=c++17 -O2 -Wall -Wno-deprecated-declarations -Iinclude -isysroot $SDK" all
+
+      - name: Generate test PCAP
+        run: python3 generate_test_pcap.py
+
+      - name: Run DPI engine on test PCAP
+        run: ./build/dpi_engine test_dpi.pcap output.pcap
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: netspectre-macos-x64
+          path: build/
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t netspectre-dpi .
+
+      - name: Test Docker image
+        run: |
+          python3 generate_test_pcap.py
+          docker run --rm -v $(pwd)/test_dpi.pcap:/app/sample.pcap netspectre-dpi --pcap /app/sample.pcap --no-dashboard

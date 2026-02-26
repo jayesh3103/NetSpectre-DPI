@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  netspectre:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount your PCAP files here
+      - ./test_dpi.pcap:/app/sample.pcap
+    command: ["--pcap", "/app/sample.pcap", "--port", "8080"]
+    restart: unless-stopped
