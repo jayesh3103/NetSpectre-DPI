@@ -906,7 +906,28 @@ Connection to YouTube:
 
 ## 10. Building and Running
 
-### Prerequisites
+### 🐳 Quick Start (Docker) — Easiest Way!
+
+No dependencies needed. Just [install Docker](https://www.docker.com/products/docker-desktop/) and run:
+
+```bash
+docker pull jayesh3103/netspectre-dpi
+docker run -p 8080:8080 jayesh3103/netspectre-dpi
+```
+
+Open [http://localhost:8080](http://localhost:8080) to see the dashboard!
+
+**With your own PCAP file:**
+
+```bash
+docker run -p 8080:8080 -v /path/to/your/capture.pcap:/app/sample.pcap jayesh3103/netspectre-dpi
+```
+
+---
+
+### Build from Source
+
+#### Prerequisites
 
 - **macOS/Linux** with C++17 compiler (`g++` or `clang++`)
 - **Make** installed
@@ -1082,4 +1103,3 @@ This DPI engine demonstrates:
 5. **Producer-Consumer Pattern** - Thread-safe queues
 
 The key insight is that even HTTPS traffic leaks the destination domain in the TLS handshake, allowing network operators to identify and control application usage.
-
