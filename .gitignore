@@ -3,3 +3,11 @@ build/
 __pycache__/
 *.pcap
 .DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker
+docker-compose.override.yml
